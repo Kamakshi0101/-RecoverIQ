@@ -14,13 +14,12 @@ class DoctorController extends Controller
     {
         $doctorId = $request->user()->id;
         
-        $totalPatients = Patient::where('doctor_id', $doctorId)->count();
-        $activeToday = Patient::where('doctor_id', $doctorId)
-            ->whereDate('last_log_date', today())
+        $totalPatients = Patient::count();
+        $activeToday = Patient::whereDate('last_log_date', today())
             ->count();
             
-        $avgPain = Patient::where('doctor_id', $doctorId)->avg('current_pain_level') ?? 0;
-        $avgMobility = Patient::where('doctor_id', $doctorId)->avg('mobility_score') ?? 0;
+        $avgPain = Patient::avg('current_pain_level') ?? 0;
+        $avgMobility = Patient::avg('mobility_score') ?? 0;
 
         return response()->json([
             'success' => true,
@@ -36,8 +35,8 @@ class DoctorController extends Controller
 
     public function patients(Request $request)
     {
-        $doctorId = $request->user()->id;
-        $query = Patient::where('doctor_id', $doctorId)->with('user:id,name,email,avatar');
+        // $doctorId is not needed if we show all patients
+        $query = Patient::with('user:id,name,email,avatar');
         
         if ($request->has('search')) {
             $search = $request->search;
