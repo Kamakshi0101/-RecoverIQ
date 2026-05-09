@@ -1,39 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
-@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-  --color-brand: #6366f1;
-  --color-brand-dark: #4f46e5;
-  --color-background-dark: #0f1117;
-  --color-card-dark: #1a1d27;
-  --color-background-light: #f3f4f6;
-  --color-card-light: #ffffff;
+  --color-primary-dark: #1F4D3A;
+  --color-primary: #2D6A4F;
+  --color-primary-light: #DCE6D8;
+  --color-accent-lavender: #D8D1F0;
+  --color-accent-beige: #E7D9C9;
+  --color-bg-main: #F7F5F1;
+  --color-bg-cream: #F5F1EA;
+  --color-text-dark: #233127;
+  --color-text-soft: #5F6B63;
   
-  --animate-fade-in: fadeIn 0.3s ease-in-out forwards;
+  --font-serif: "Cormorant Garamond", "Playfair Display", serif;
+  --font-sans: "Inter", sans-serif;
+}
+
+@keyframes fadeInUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes floatGently {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes softGlow {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.5; }
 }
 
 @layer base {
-  body {
-    @apply bg-background-light text-gray-900 transition-colors duration-200 font-sans;
+  html {
+    @apply scroll-smooth;
   }
-  
-  body.dark {
-    @apply bg-background-dark text-white;
+
+  body {
+    @apply bg-[#F7F5F1] text-[#233127] font-sans transition-colors duration-500;
+    font-family: "Inter", sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Cormorant Garamond", "Playfair Display", serif;
+    @apply font-semibold tracking-wide;
+  }
+
+  h1 {
+    @apply text-5xl lg:text-7xl font-bold leading-tight;
+  }
+
+  h2 {
+    @apply text-4xl lg:text-5xl font-bold leading-snug;
+  }
+
+  h3 {
+    @apply text-2xl lg:text-3xl font-semibold;
+  }
+
+  h4 {
+    @apply text-xl font-semibold;
+  }
+
+  p {
+    @apply text-[#5F6B63] leading-relaxed;
   }
 
   .card {
-    @apply rounded-xl border border-gray-200 bg-card-light transition-all duration-200;
+    @apply rounded-2xl bg-white border border-[#E7D9C9]/40 transition-all duration-300 hover:shadow-sm hover:border-[#E7D9C9];
   }
-  
-  .dark .card {
-    @apply border-white/10 bg-card-dark hover:scale-[1.01];
+
+  .premium-panel {
+    @apply rounded-3xl bg-gradient-to-br from-[#F5F1EA] to-[#F7F5F1] border border-[#E7D9C9]/50 p-8;
   }
-  
+
   .btn-primary {
-    @apply bg-brand hover:bg-brand-dark text-white rounded-lg px-4 py-2 transition-colors;
+    @apply bg-[#2D6A4F] hover:bg-[#1F4D3A] text-white rounded-full px-8 py-3.5 font-medium transition-all duration-300 hover:shadow-lg hover:shadow-[#2D6A4F]/20 active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply bg-white border border-[#2D6A4F] text-[#2D6A4F] hover:bg-[#F5F1EA] rounded-full px-8 py-3.5 font-medium transition-all duration-300 active:scale-95;
+  }
+
+  .btn-ghost {
+    @apply text-[#2D6A4F] hover:bg-[#DCE6D8]/30 rounded-full px-8 py-3.5 font-medium transition-all duration-300 active:scale-95;
+  }
+
+  .stat-label {
+    @apply text-sm uppercase tracking-widest text-[#5F6B63] font-medium;
+  }
+
+  .stat-value {
+    @apply text-4xl lg:text-5xl font-bold text-[#233127] mt-2;
+  }
+
+  .divider-organic {
+    @apply h-px bg-gradient-to-r from-transparent via-[#E7D9C9] to-transparent;
   }
 }

@@ -1,10 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
-import StatCard from '../../components/StatCard';
+import PremiumStatCard from '../../components/PremiumStatCard';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import ErrorAlert from '../../components/ErrorAlert';
-import { Users, Activity, Target, Zap } from 'lucide-react';
+import { Users, Activity, TrendingUp, Zap, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: 'easeOut' },
+  },
+};
 
 export default function DoctorDashboard() {
   const [data, setData] = useState(null);
@@ -31,52 +52,127 @@ export default function DoctorDashboard() {
   if (!data) return null;
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex justify-between items-end mb-8">
+    <motion.div
+      className="space-y-12"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {/* Header Section */}
+      <motion.div variants={itemVariants} className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Doctor Dashboard</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">Overview of your clinic's performance.</p>
+          <h1 className="text-5xl lg:text-6xl font-serif font-bold text-[#233127] mb-4 leading-tight">
+            Clinical Dashboard
+          </h1>
+          <p className="text-lg text-[#5F6B63] max-w-2xl leading-relaxed">
+            Overview of your patient cohort and clinic performance metrics.
+          </p>
         </div>
-        <button 
+        <motion.button
           onClick={() => navigate('/doctor/patients')}
-          className="btn-primary"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="btn-primary px-8 py-4 flex items-center gap-2 whitespace-nowrap font-semibold"
         >
-          View All Patients
-        </button>
-      </div>
+          Manage Patients
+          <ArrowRight className="h-5 w-5" />
+        </motion.button>
+      </motion.div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard
+      {/* Stats Grid */}
+      <motion.div
+        variants={itemVariants}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+      >
+        <PremiumStatCard
           title="Total Patients"
           value={data.total_patients}
-          icon={<Users className="h-6 w-6" />}
-          color="indigo"
+          icon={<Users className="h-8 w-8" />}
+          color="primary"
         />
-        <StatCard
+        <PremiumStatCard
           title="Active Today"
           value={data.active_today}
-          subtitle="Patients logged in"
-          icon={<Zap className="h-6 w-6" />}
-          color="green"
+          subtitle="Logged in"
+          icon={<Zap className="h-8 w-8" />}
+          color="lavender"
         />
-        <StatCard
+        <PremiumStatCard
           title="Avg Pain Level"
           value={`${data.avg_pain}/10`}
-          icon={<Activity className="h-6 w-6" />}
-          color="red"
+          icon={<Activity className="h-8 w-8" />}
+          color="beige"
         />
-        <StatCard
+        <PremiumStatCard
           title="Avg Mobility"
           value={`${data.avg_mobility}/100`}
-          icon={<Target className="h-6 w-6" />}
-          color="blue"
+          icon={<TrendingUp className="h-8 w-8" />}
+          color="soft"
         />
-      </div>
+      </motion.div>
 
-      <div className="mt-8 card p-8 text-center text-gray-500 dark:text-gray-400">
-        <Users className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-        <p>Select "View All Patients" or use the sidebar to manage individual patient records, assign exercises, and leave feedback.</p>
-      </div>
-    </div>
+      {/* Clinical Insights Section */}
+      <motion.div variants={itemVariants} className="bg-white rounded-3xl border border-[#E7D9C9]/40 p-12 shadow-md shadow-black/5">
+        <div className="text-center max-w-2xl mx-auto">
+          <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-[#DCE6D8] text-[#2D6A4F] mb-6">
+            <Users className="h-8 w-8" />
+          </div>
+          <h3 className="text-2xl font-serif font-semibold text-[#233127] mb-4">
+            Patient Management
+          </h3>
+          <p className="text-[#5F6B63] leading-relaxed mb-8">
+            Access your patient roster to review progress, assign exercises, set milestones, and provide clinical feedback. Each patient's journey is unique—let's support their recovery together.
+          </p>
+          <motion.button
+            onClick={() => navigate('/doctor/patients')}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="btn-primary px-8 py-3.5 flex items-center gap-2 mx-auto font-semibold"
+          >
+            View Patient Roster
+            <ArrowRight className="h-5 w-5" />
+          </motion.button>
+        </div>
+      </motion.div>
+
+      {/* Clinical Notes */}
+      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[
+          {
+            title: "Monitor Progress",
+            description: "Track patient metrics and identify concerning trends early",
+            icon: <TrendingUp className="h-6 w-6" />
+          },
+          {
+            title: "Personalize Care",
+            description: "Adjust exercises and milestones based on individual recovery",
+            icon: <Activity className="h-6 w-6" />
+          },
+          {
+            title: "Real-time Communication",
+            description: "Send encouragement and clinical feedback directly to patients",
+            icon: <Users className="h-6 w-6" />
+          }
+        ].map((item, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 + 0.1 * i }}
+            className="bg-white rounded-2xl border border-[#E7D9C9]/40 p-6 hover:shadow-md hover:shadow-black/5 transition-all"
+          >
+            <div className="w-12 h-12 rounded-xl bg-[#DCE6D8] text-[#2D6A4F] flex items-center justify-center mb-4">
+              {item.icon}
+            </div>
+            <h4 className="font-serif font-semibold text-[#233127] mb-2">
+              {item.title}
+            </h4>
+            <p className="text-sm text-[#5F6B63]">
+              {item.description}
+            </p>
+          </motion.div>
+        ))}
+      </motion.div>
+    </motion.div>
   );
 }
