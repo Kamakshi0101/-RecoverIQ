@@ -21,6 +21,19 @@ class MilestoneController extends Controller
         ]);
     }
 
+    public function forPatient($id)
+    {
+        $milestones = Milestone::where('patient_id', $id)
+            ->orderBy('target_date', 'asc')
+            ->get();
+            
+        return response()->json([
+            'success' => true,
+            'data' => $milestones,
+            'message' => 'Patient milestones retrieved successfully'
+        ]);
+    }
+
     public function store(Request $request, $id)
     {
         $request->validate([

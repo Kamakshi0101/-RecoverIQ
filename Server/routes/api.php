@@ -37,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/patients', [DoctorController::class, 'patients']); // Search + Paginate
         Route::get('/patients/{id}', [DoctorController::class, 'patientDetail']);
         Route::get('/patients/{id}/progress', [DoctorController::class, 'patientProgress']);
+        Route::get('/patients/{id}/milestones', [MilestoneController::class, 'forPatient']); // View patient milestones
         Route::post('/patients/{id}/exercises', [ExerciseController::class, 'store']); // Assign exercise
         Route::post('/patients/{id}/milestones', [MilestoneController::class, 'store']); // Assign milestone
         Route::post('/patients/{id}/comment', [DoctorController::class, 'addComment']); // Leave feedback
