@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Activity, Dumbbell, Flag, Users, BarChart3 } from 'lucide-react';
+import { LayoutDashboard, Activity, Dumbbell, Flag, Users, BarChart3, Calendar as CalendarIcon, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function Sidebar() {
@@ -11,13 +11,16 @@ export default function Sidebar() {
   const patientLinks = [
     { to: '/patient/dashboard', icon: <LayoutDashboard />, label: 'Dashboard' },
     { to: '/patient/progress', icon: <Activity />, label: 'Progress' },
-    { to: '/patient/exercises', icon: <Dumbbell />, label: 'Exercises' },
+    { to: '/patient/exercise-logger', icon: <Dumbbell />, label: 'Exercise Logger' },
     { to: '/patient/milestones', icon: <Flag />, label: 'Milestones' },
+    { to: '/patient/calendar', icon: <CalendarIcon />, label: 'Calendar' },
   ];
 
   const doctorLinks = [
     { to: '/doctor/dashboard', icon: <LayoutDashboard />, label: 'Dashboard' },
     { to: '/doctor/patients', icon: <Users />, label: 'Patients' },
+    { to: '/doctor/appointments', icon: <CalendarIcon />, label: 'Appointments' },
+    { to: '/doctor/availability', icon: <Clock />, label: 'Availability' },
   ];
 
   const links = isPatient ? patientLinks : doctorLinks;

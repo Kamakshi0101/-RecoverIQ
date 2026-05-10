@@ -14,10 +14,17 @@ class Milestone extends Model
         'assigned_by',
         'title',
         'description',
+        'therapist_notes',
+        'sub_progress',
         'category',
         'target_date',
         'completed_at',
         'status',
+    ];
+
+    protected $casts = [
+        'target_date' => 'date',
+        'completed_at' => 'datetime',
     ];
 
     public function patient()

@@ -12,11 +12,16 @@ import PatientDashboard from './pages/patient/Dashboard';
 import PatientProgress from './pages/patient/Progress';
 import PatientExercises from './pages/patient/Exercises';
 import PatientMilestones from './pages/patient/Milestones';
+import ExerciseLogger from './pages/patient/ExerciseLogger';
+import Calendar from './pages/patient/Calendar';
 
 // Doctor Pages
 import DoctorDashboard from './pages/doctor/Dashboard';
 import PatientList from './pages/doctor/PatientList';
 import PatientDetail from './pages/doctor/PatientDetail';
+import TherapistAppointments from './pages/doctor/Appointments';
+import AvailabilityManager from './pages/doctor/AvailabilityManager';
+import SessionPrepDashboard from './pages/doctor/SessionPrepDashboard';
 
 const ProtectedRoute = ({ children, allowedRole }) => {
   const { user, loading } = useAuth();
@@ -48,7 +53,9 @@ function App() {
                 <Route path="dashboard" element={<PatientDashboard />} />
                 <Route path="progress" element={<PatientProgress />} />
                 <Route path="exercises" element={<PatientExercises />} />
+                <Route path="exercise-logger" element={<ExerciseLogger />} />
                 <Route path="milestones" element={<PatientMilestones />} />
+                <Route path="calendar" element={<Calendar />} />
               </Route>
               
               <Route path="/doctor" element={
@@ -59,6 +66,9 @@ function App() {
                 <Route path="dashboard" element={<DoctorDashboard />} />
                 <Route path="patients" element={<PatientList />} />
                 <Route path="patients/:id" element={<PatientDetail />} />
+                <Route path="patients/:id/prep" element={<SessionPrepDashboard />} />
+                <Route path="appointments" element={<TherapistAppointments />} />
+                <Route path="availability" element={<AvailabilityManager />} />
               </Route>
             </Routes>
           </div>

@@ -88,4 +88,15 @@ class FeedbackService
 
         return $feedback;
     }
+
+    public function checkPainAlert($patientUserId, $painLevel)
+    {
+        if ($painLevel >= 7) {
+            // Ideally store this in a system_alerts table or send an email/notification to the doctor.
+            // For now, we'll log it as a comment if possible or just rely on the frontend banner.
+            \Log::warning("High pain alert triggered for patient {$patientUserId} with pain level {$painLevel}.");
+            return true;
+        }
+        return false;
+    }
 }

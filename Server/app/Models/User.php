@@ -48,4 +48,29 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function patientsAsDoctor()
+    {
+        return $this->hasMany(Patient::class, 'doctor_id');
+    }
+
+    public function appointmentsAsDoctor()
+    {
+        return $this->hasMany(Appointment::class, 'doctor_id');
+    }
+
+    public function appointmentsAsPatient()
+    {
+        return $this->hasMany(Appointment::class, 'patient_id');
+    }
+
+    public function availableSlots()
+    {
+        return $this->hasMany(AvailableSlot::class, 'doctor_id');
+    }
+
+    public function milestoneBadges()
+    {
+        return $this->hasMany(MilestoneBadge::class, 'patient_id');
+    }
 }

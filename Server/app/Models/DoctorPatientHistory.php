@@ -5,35 +5,29 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Patient extends Model
+class DoctorPatientHistory extends Model
 {
     use HasFactory;
 
+    protected $table = 'doctor_patient_history';
+
     protected $fillable = [
-        'user_id',
+        'patient_id',
         'doctor_id',
-        'injury_type',
-        'injury_date',
-        'target_recovery_date',
-        'current_pain_level',
-        'mobility_score',
-        'streak_count',
-        'last_log_date',
-        'status',
-        'assigned_at',
         'assigned_by',
+        'assigned_at',
+        'unassigned_at',
+        'reason',
     ];
 
     protected $casts = [
-        'injury_date' => 'date',
-        'target_recovery_date' => 'date',
-        'last_log_date' => 'date',
         'assigned_at' => 'datetime',
+        'unassigned_at' => 'datetime',
     ];
 
-    public function user()
+    public function patient()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'patient_id');
     }
 
     public function doctor()

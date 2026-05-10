@@ -10,13 +10,25 @@ class ExerciseLog extends Model
     use HasFactory;
 
     protected $fillable = [
-        'exercise_id',
         'patient_id',
-        'actual_reps',
-        'actual_duration_minutes',
-        'difficulty_rating',
+        'exercise_id',
+        'exercise_name',
+        'sets_prescribed',
+        'reps_prescribed',
+        'sets_completed',
+        'reps_completed',
+        'duration_seconds',
+        'pain_level',
+        'rpe_level',
+        'mood',
         'notes',
+        'is_incomplete',
         'logged_at',
+    ];
+
+    protected $casts = [
+        'logged_at' => 'datetime',
+        'is_incomplete' => 'boolean',
     ];
 
     public function exercise()

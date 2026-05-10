@@ -7,6 +7,7 @@ use App\Models\Patient;
 use App\Models\User;
 use App\Models\ProgressLog;
 use App\Models\DoctorComment;
+use App\Models\Appointment;
 
 class DoctorController extends Controller
 {
@@ -14,12 +15,26 @@ class DoctorController extends Controller
     {
         $doctorId = $request->user()->id;
         
-        $totalPatients = Patient::count();
-        $activeToday = Patient::whereDate('last_log_date', today())
+        $totalPatients = Patient::where('doctor_id', $doctorId)->count();
+        $activeToday = Patient::where('doctor_id', $doctorId)
+            ->whereDate('last_log_date', today())
             ->count();
             
-        $avgPain = Patient::avg('current_pain_level') ?? 0;
-        $avgMobility = Patient::avg('mobility_score') ?? 0;
+        $avgPain = Patient::where('doctor_id', $doctorId)->avg('current_pain_level') ?? 0;
+        $avgMobility = Patient::where('doctor_id', $doctorId)->avg('mobility_score') ?? 0;
+
+        $todaysAppointments = Appointment::where('doctor_id', $doctorId)
+            ->whereDate('scheduled_at', today())
+            ->where('status', 'confirmed')
+            ->count();
+            
+        $upcomingAppointments = Appointment::with('patient:id,name,avatar')
+            ->where('doctor_id', $doctorId)
+            ->where('scheduled_at', '>=', now())
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->orderBy('scheduled_at', 'asc')
+            ->take(5)
+            ->get();
 
         return response()->json([
             'success' => true,
@@ -28,6 +43,8 @@ class DoctorController extends Controller
                 'active_today' => $activeToday,
                 'avg_pain' => round($avgPain, 1),
                 'avg_mobility' => round($avgMobility, 1),
+                'todays_appointments' => $todaysAppointments,
+                'upcoming_appointments' => $upcomingAppointments,
             ],
             'message' => 'Doctor dashboard data loaded successfully'
         ]);
@@ -35,8 +52,8 @@ class DoctorController extends Controller
 
     public function patients(Request $request)
     {
-        // $doctorId is not needed if we show all patients
-        $query = Patient::with('user:id,name,email,avatar');
+        $doctorId = $request->user()->id;
+        $query = Patient::with('user:id,name,email,avatar')->where('doctor_id', $doctorId);
         
         if ($request->has('search')) {
             $search = $request->search;
@@ -58,9 +75,13 @@ class DoctorController extends Controller
         ]);
     }
 
-    public function patientDetail($id)
+    public function patientDetail(Request $request, $id)
     {
-        $patient = Patient::with(['user:id,name,email,avatar', 'doctor:id,name'])->where('user_id', $id)->firstOrFail();
+        $doctorId = $request->user()->id;
+        $patient = Patient::with(['user:id,name,email,avatar', 'doctor:id,name'])
+            ->where('user_id', $id)
+            ->where('doctor_id', $doctorId)
+            ->firstOrFail();
         
         return response()->json([
             'success' => true,
