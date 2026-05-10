@@ -10,6 +10,10 @@ use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ExerciseLogController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\MilestoneController;
+use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\AvailabilityController;
+use App\Http\Controllers\SessionPrepController;
 
 // Public
 Route::post('/auth/register', [AuthController::class, 'register']);
@@ -81,12 +85,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/appointments/{id}/notes', [AppointmentController::class, 'addSessionNotes']);
         
         // Availability
-        Route::get('/availability', [\App\Http\Controllers\AvailabilityController::class, 'index']);
-        Route::post('/availability/generate', [\App\Http\Controllers\AvailabilityController::class, 'generate']);
-        Route::post('/availability/block', [\App\Http\Controllers\AvailabilityController::class, 'block']);
-        Route::delete('/availability/{id}', [\App\Http\Controllers\AvailabilityController::class, 'destroy']);
+        Route::get('/availability', [AvailabilityController::class, 'index']);
+        Route::post('/availability/generate', [AvailabilityController::class, 'generate']);
+        Route::post('/availability/block', [AvailabilityController::class, 'block']);
+        Route::delete('/availability/{id}', [AvailabilityController::class, 'destroy']);
 
         // Session Prep
-        Route::get('/patients/{patientId}/session-prep', [\App\Http\Controllers\SessionPrepController::class, 'getPrepData']);
+        Route::get('/patients/{patientId}/session-prep', [SessionPrepController::class, 'getPrepData']);
     });
 });

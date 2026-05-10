@@ -11,21 +11,26 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const controller = new AbortController();
     const checkAuth = async () => {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const response = await api.get('/auth/me');
+          const response = await api.get('/auth/me', { signal: controller.signal });
           setUser(response.data.data);
           localStorage.setItem('user', JSON.stringify(response.data.data));
         } catch (error) {
+          if (error.name === 'CanceledError' || error.code === 'ERR_CANCELED') return;
           console.error("Auth check failed", error);
-          logout();
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          setUser(null);
         }
       }
       setLoading(false);
     };
     checkAuth();
+    return () => controller.abort();
   }, []);
 
   const login = async (credentials) => {

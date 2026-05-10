@@ -33,7 +33,10 @@ export default function Login() {
     try {
       const data = await login({ email, password });
       if (data.success) {
-        navigate(data.data.user.role === 'doctor' ? '/doctor/dashboard' : '/patient/dashboard');
+        const role = data.data.user.role;
+        if (role === 'admin') navigate('/admin/dashboard');
+        else if (role === 'doctor') navigate('/doctor/dashboard');
+        else navigate('/patient/dashboard');
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid credentials. Please try again.');
