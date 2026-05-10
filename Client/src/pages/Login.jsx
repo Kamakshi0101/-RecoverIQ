@@ -46,8 +46,9 @@ export default function Login() {
   };
 
   const fillDemoCredentials = (role) => {
-    setEmail(role === 'doctor' ? 'john.doctor@rehab.com' : 'sara.patient@rehab.com');
-    setPassword('password');
+    if (role === 'admin') { setEmail('admin@rehab.com'); setPassword('password'); }
+    else if (role === 'doctor') { setEmail('john.doctor@rehab.com'); setPassword('password'); }
+    else { setEmail('sara.patient@rehab.com'); setPassword('password'); }
   };
 
   return (
@@ -193,7 +194,7 @@ export default function Login() {
           <motion.div variants={itemVariants} className="mt-10">
             <div className="h-px w-full bg-gradient-to-r from-transparent via-[#E7D9C9] to-transparent mb-6" />
             <p className="text-[11px] uppercase tracking-[0.3em] text-[#5F6B63] mb-4">Demo Access</p>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-3 gap-3">
               <motion.button
                 type="button"
                 onClick={() => fillDemoCredentials('patient')}
@@ -209,6 +210,14 @@ export default function Login() {
                 className="rounded-full border border-[#E7D9C9] bg-white/70 px-4 py-2.5 text-sm font-medium text-[#2D6A4F] transition-all"
               >
                 Doctor
+              </motion.button>
+              <motion.button
+                type="button"
+                onClick={() => fillDemoCredentials('admin')}
+                whileHover={{ y: -1 }}
+                className="rounded-full border border-[#E7D9C9] bg-white/70 px-4 py-2.5 text-sm font-medium text-[#2D6A4F] transition-all"
+              >
+                Admin
               </motion.button>
             </div>
           </motion.div>

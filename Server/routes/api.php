@@ -25,14 +25,25 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Admin Routes
     Route::middleware('role:admin')->prefix('admin')->group(function () {
-        Route::get('/dashboard', [AdminController::class, 'index']);
-        Route::get('/doctors', [AdminController::class, 'getDoctors']);
-        Route::get('/patients', [AdminController::class, 'getPatients']);
-        Route::get('/patients/unassigned', [AdminController::class, 'getUnassignedPatients']);
-        Route::get('/doctors/{doctorId}/patients', [AdminController::class, 'getDoctorPatients']);
-        Route::post('/assign', [AdminController::class, 'assignPatient']);
-        Route::post('/unassign', [AdminController::class, 'unassignPatient']);
-        Route::post('/reassign', [AdminController::class, 'reassignPatient']);
+        Route::get('/dashboard',                    [AdminController::class, 'dashboard']);
+
+        // Doctor management
+        Route::get('/doctors',                      [AdminController::class, 'getDoctors']);
+        Route::post('/doctors',                     [AdminController::class, 'createDoctor']);
+        Route::delete('/doctors/{id}',              [AdminController::class, 'deleteDoctor']);
+        Route::get('/doctors/{doctorId}/patients',  [AdminController::class, 'getDoctorPatients']);
+
+        // Patient management
+        Route::get('/patients/unassigned',          [AdminController::class, 'getUnassignedPatients']);
+        Route::get('/patients',                     [AdminController::class, 'getPatients']);
+
+        // Assignment management
+        Route::post('/assign',                      [AdminController::class, 'assignPatient']);
+        Route::post('/unassign',                    [AdminController::class, 'unassignPatient']);
+        Route::post('/reassign',                    [AdminController::class, 'reassignPatient']);
+
+        // History log
+        Route::get('/history',                      [AdminController::class, 'getHistory']);
     });
 
     // Patient Routes

@@ -21,6 +21,8 @@ import PatientList from './pages/doctor/PatientList';
 import PatientDetail from './pages/doctor/PatientDetail';
 import TherapistAppointments from './pages/doctor/Appointments';
 import AvailabilityManager from './pages/doctor/AvailabilityManager';
+// Admin Pages
+import AdminDashboard from './pages/admin/Dashboard';
 import SessionPrepDashboard from './pages/doctor/SessionPrepDashboard';
 
 const ProtectedRoute = ({ children, allowedRole }) => {
@@ -29,7 +31,9 @@ const ProtectedRoute = ({ children, allowedRole }) => {
   if (loading) return <div className="flex justify-center items-center h-screen"><div className="animate-pulse">Loading...</div></div>;
   if (!user) return <Navigate to="/login" />;
   if (allowedRole && user.role !== allowedRole) {
-    return <Navigate to={user.role === 'doctor' ? '/doctor/dashboard' : '/patient/dashboard'} />;
+    if (user.role === 'admin') return <Navigate to="/admin/dashboard" />;
+    if (user.role === 'doctor') return <Navigate to="/doctor/dashboard" />;
+    return <Navigate to="/patient/dashboard" />;
   }
   return children;
 };
@@ -45,6 +49,14 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               
+              <Route path="/admin" element={
+                <ProtectedRoute allowedRole="admin">
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }>
+                <Route path="dashboard" element={<AdminDashboard />} />
+              </Route>
+
               <Route path="/patient" element={
                 <ProtectedRoute allowedRole="patient">
                   <Layout />

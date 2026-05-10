@@ -14,19 +14,27 @@ class AuthController extends Controller
 {
     public function register(RegisterRequest $request)
     {
+        // Security: admin accounts cannot be self-registered
+        if ($request->role === 'admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Admin accounts cannot be self-registered.',
+            ], 403);
+        }
+
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name'     => $request->name,
+            'email'    => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role,
+            'role'     => $request->role,
         ]);
 
         if ($user->role === 'patient') {
             Patient::create([
-                'user_id' => $user->id,
-                'status' => 'active',
-                'current_pain_level' => 0,
-                'mobility_score' => 0,
+                'user_id'             => $user->id,
+                'status'              => 'active',
+                'current_pain_level'  => 0,
+                'mobility_score'      => 0,
             ]);
         }
 
@@ -34,11 +42,8 @@ class AuthController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => [
-                'user' => $user,
-                'token' => $token,
-            ],
-            'message' => 'User registered successfully'
+            'data'    => ['user' => $user, 'token' => $token],
+            'message' => 'User registered successfully',
         ], 201);
     }
 

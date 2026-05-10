@@ -90,14 +90,25 @@ class DoctorController extends Controller
         ]);
     }
 
-    public function patientProgress($id)
+    public function patientProgress(Request $request, $id)
     {
+        $doctorId = $request->user()->id;
+
+        // Security: ensure this patient belongs to the requesting doctor
+        $patient = Patient::where('user_id', $id)->where('doctor_id', $doctorId)->first();
+        if (!$patient) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Access denied. This patient is not assigned to you.',
+            ], 403);
+        }
+
         $progress = ProgressLog::where('patient_id', $id)->orderBy('logged_at', 'desc')->paginate(15);
-        
+
         return response()->json([
             'success' => true,
-            'data' => $progress,
-            'message' => 'Patient progress retrieved successfully'
+            'data'    => $progress,
+            'message' => 'Patient progress retrieved successfully',
         ]);
     }
 
