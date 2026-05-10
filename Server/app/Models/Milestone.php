@@ -23,8 +23,9 @@ class Milestone extends Model
     ];
 
     protected $casts = [
-        'target_date' => 'date',
-        'completed_at' => 'datetime',
+        'target_date'   => 'date',
+        'completed_at'  => 'datetime',
+        'sub_progress'  => 'integer',
     ];
 
     public function patient()
@@ -35,5 +36,10 @@ class Milestone extends Model
     public function assignedBy()
     {
         return $this->belongsTo(User::class, 'assigned_by');
+    }
+
+    public function badge()
+    {
+        return $this->hasOne(MilestoneBadge::class);
     }
 }

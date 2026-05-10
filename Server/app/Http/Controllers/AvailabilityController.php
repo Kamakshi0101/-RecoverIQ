@@ -100,20 +100,73 @@ class AvailabilityController extends Controller
     }
 
     /**
-     * Delete a specific unbooked slot
+     * Bulk-create slots from an array — POST /api/doctor/availability
+     */
+    public function setAvailability(Request $request)
+    {
+        $request->validate([
+            'slots'                     => 'required|array|min:1',
+            'slots.*.slot_date'         => 'required|date|after:today',
+            'slots.*.slot_time'         => 'required|date_format:H:i',
+            'slots.*.duration_minutes'  => 'nullable|integer|min:15|max:180',
+        ]);
+
+        $doctorId = $request->user()->id;
+        $created  = 0;
+
+        foreach ($request->slots as $slot) {
+            $time = $slot['slot_time'] . ':00';
+
+            $exists = AvailableSlot::where('doctor_id', $doctorId)
+                ->where('slot_date', $slot['slot_date'])
+                ->where('slot_time', $time)
+                ->exists();
+
+            if (!$exists) {
+                AvailableSlot::create([
+                    'doctor_id'        => $doctorId,
+                    'slot_date'        => $slot['slot_date'],
+                    'slot_time'        => $time,
+                    'duration_minutes' => $slot['duration_minutes'] ?? 60,
+                    'is_booked'        => false,
+                ]);
+                $created++;
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'data'    => ['slots_created' => $created],
+            'message' => "{$created} slot(s) created successfully.",
+        ], 201);
+    }
+
+    /**
+     * Delete a specific unbooked slot — DELETE /api/doctor/availability/{id}
      */
     public function destroy(Request $request, $id)
     {
         $slot = AvailableSlot::where('id', $id)
             ->where('doctor_id', $request->user()->id)
-            ->where('is_booked', false)
-            ->firstOrFail();
+            ->first();
+
+        if (!$slot) {
+            return response()->json(['success' => false, 'message' => 'Slot not found.'], 404);
+        }
+
+        if ($slot->is_booked) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot delete a booked slot. Cancel the appointment first.',
+            ], 422);
+        }
 
         $slot->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Slot removed.'
+            'data'    => null,
+            'message' => 'Slot removed.',
         ]);
     }
 }
